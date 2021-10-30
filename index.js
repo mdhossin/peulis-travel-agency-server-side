@@ -1,6 +1,3 @@
-// user : travelUser
-// pass : 3H3HTMMAWnP3TbUJ
-
 const express = require("express");
 const { MongoClient } = require("mongodb");
 const bodyParser = require("body-parser");
@@ -54,7 +51,7 @@ async function run() {
     // add single product buy now button create api set on the database
     app.post("/placeorder", async (req, res) => {
       const newProduct = req.body;
-      // console.log(newProduct);
+      console.log(newProduct);
       const result = await ordersCollection.insertOne(newProduct);
       res.json(result);
     });
@@ -72,7 +69,7 @@ async function run() {
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
       console.log("id hitting", id);
-      const query = { _id: id };
+      const query = { _id: ObjectId(id) };
       console.log(query);
       const result = await ordersCollection.deleteOne(query);
       console.log(result);
@@ -85,10 +82,10 @@ async function run() {
     });
 
     // delete from manage order
-    app.delete("/manageorder/:id", async (req, res) => {
+    app.delete("/orders/:id", async (req, res) => {
       const id = req.params.id;
       console.log("id hitting", id);
-      const query = { _id: id };
+      const query = { _id: ObjectId(id) };
       console.log(query);
       const result = await ordersCollection.deleteOne(query);
       console.log(result);
