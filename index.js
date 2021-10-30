@@ -35,7 +35,6 @@ async function run() {
     // add new service for create post api
     app.post("/products", async (req, res) => {
       const newService = req.body;
-      // console.log(req.body);
       const result = await servicesCollection.insertOne(newService);
       res.json(result);
     });
@@ -51,7 +50,6 @@ async function run() {
     // add single product buy now button create api set on the database
     app.post("/placeorder", async (req, res) => {
       const newProduct = req.body;
-      console.log(newProduct);
       const result = await ordersCollection.insertOne(newProduct);
       res.json(result);
     });
@@ -59,20 +57,15 @@ async function run() {
     // load buy now order on the ui api my order component
     app.get("/orders/:email", async (req, res) => {
       const id = req.params.email;
-      // console.log(id);
-
       const result = await ordersCollection.find({ email: id }).toArray();
-
       res.send(result);
     });
+
     // delete from my orders create delete api
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("id hitting", id);
       const query = { _id: ObjectId(id) };
-      console.log(query);
       const result = await ordersCollection.deleteOne(query);
-      console.log(result);
       res.json(result);
     });
 
@@ -84,11 +77,27 @@ async function run() {
     // delete from manage order
     app.delete("/orders/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("id hitting", id);
       const query = { _id: ObjectId(id) };
-      console.log(query);
       const result = await ordersCollection.deleteOne(query);
-      console.log(result);
+      res.json(result);
+    });
+
+    // update order api
+    app.put("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateStatus = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: updateStatus.status,
+        },
+      };
+      const result = await ordersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.json(result);
     });
   } finally {
